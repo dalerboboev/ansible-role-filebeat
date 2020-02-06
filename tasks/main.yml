@@ -17,6 +17,6 @@
 
 - name: Create monitors.d
   file:
-    path: "{{filebeat_config_dir}}/monitors.d
+    path: "{{filebeat_config_dir}}/monitors.d"
     state: directory
   become: yes
