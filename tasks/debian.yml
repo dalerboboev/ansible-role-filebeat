@@ -1,25 +1,25 @@
 ---
-- name: Install metricbeat from Debian package
+- name: Install filebeat from Debian package
   apt:
-    deb: "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-{{ elk_version }}-amd64.deb"
+    deb: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-{{ elk_version }}-amd64.deb"
   become: yes
 
-- name: Copy metricbeat configuration
+- name: Copy filebeat configuration
   template:
-    src: metricbeat.yml.j2
-    dest: "/etc/metricbeat/metricbeat.yml"
+    src: filebeat.yml.j2
+    dest: "/etc/filebeat/filebeat.yml"
     owner: root
     mode: 0600
   become: yes
   notify:
 
-- name: Enable metricbeat service
+- name: Enable filebeat service
   service:
-    name: metricbeat
+    name: filebeat
     state: started
     enabled: yes
   become: yes
 
 - name: Set configuration dir
   set_fact:
-    metricbeat_config_dir: "/etc/metricbeat"
+    filebeat_config_dir: "/etc/filebeat"
