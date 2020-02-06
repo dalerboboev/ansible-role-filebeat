@@ -1,0 +1,33 @@
+---
+# This is done to avoid certain issues with Python using older SSL.
+- name: Download filebeat tarball (workaround)
+  shell: "curl https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-{{ elk_version }}-darwin-x86_64.tar.gz -o filebeat-{{ elk_version }}-darwin-x86_64.tar.gz"
+  args:
+    creates: "filebeat-{{ elk_version }}-darwin-x86_64.tar.gz"
+  register: downloaded_filebeat
+
+# This is done this way to avoid having to set up GNU tar.
+- name: Extract
+  shell: "gunzip -c filebeat-{{ elk_version }}-darwin-x86_64.tar.gz | tar -xf - && cp -R filebeat-{{ elk_version }}-darwin-x86_64/ /Applications/filebeat"
+  when: downloaded_filebeat.changed
+  become: yes
+
+- name: Copy configuration file
+  template:
+    src: filebeat.yml.j2
+    dest: "{{ mac_install_location }}/filebeat.yml"
+    owner: root
+    mode: 0600
+  become: yes
+  notify: reload filebeat
+
+- name: Copy service file
+  template:
+    src: co.elastic.filebeat.plist
+    dest: /Library/LaunchDaemons/co.elastic.filebeat.plist
+  become: yes
+  notify: reload filebeat
+
+- name: Set configuration dir
+  set_fact:
+    filebeat_config_dir: "{{ mac_install_location }}"

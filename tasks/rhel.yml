@@ -1,0 +1,25 @@
+---
+- name: Install filebeat from RPM
+  yum:
+    name: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-{{ elk_version }}-x86_64.rpm"
+  become: yes
+
+- name: Copy filebeat configuration
+  template:
+    src: filebeat.yml.j2
+    dest: "/etc/filebeat/filebeat.yml"
+    owner: root
+    mode: 0600
+  become: yes
+  notify: reload filebeat
+
+- name: Enable filebeat service
+  service:
+    name: filebeat
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Set configuration dir
+  set_fact:
+    filebeat_config_dir: "/etc/filebeat"

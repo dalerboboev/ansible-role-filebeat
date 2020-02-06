@@ -1,0 +1,14 @@
+---
+- name: Reload filebeat mac
+  shell: launchctl unload /Library/LaunchDaemons/co.elastic.filebeat.plist; launchctl load /Library/LaunchDaemons/co.elastic.filebeat.plist
+  become: yes
+  when: ansible_os_family == "Darwin"
+  listen: "reload filebeat"
+
+- name: Reload filebeat linux
+  service:
+    name: filebeat
+    state: restarted
+  become: yes
+  listen: "reload filebeat"
+  when: ansible_os_family != "Darwin"
