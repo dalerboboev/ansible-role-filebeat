@@ -1,4 +1,4 @@
-# MetricBeat role
+# Filebeat role
 Install Elastic's filebeat.
 
 Should work on macOS, Debian, Ubuntu, Centos, RHEL
