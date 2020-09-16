@@ -20,3 +20,9 @@
     path: "{{filebeat_config_dir}}/monitors.d"
     state: directory
   become: yes
+  when: filebeat_use_central_management != true
+
+- name: Enroll in central management if configure
+  shell: "{{filebeat_config_dir}}/filebeat enroll {{filebeat_cm_url}} {{filebeat_cm_token}} --force"
+  become: yes
+  when: filebeat_use_central_management
